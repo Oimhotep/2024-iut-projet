@@ -1,9 +1,11 @@
 package iut.nantes.project.stores.service
 
 import iut.nantes.project.stores.model.Contact
+import iut.nantes.project.stores.exception.EntityNotFoundException
 import iut.nantes.project.stores.repository.ContactRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 @Service
 class ContactService(private val contactRepository: ContactRepository) {
@@ -14,7 +16,7 @@ class ContactService(private val contactRepository: ContactRepository) {
 
     fun getContactById(id: Long): Contact {
         return contactRepository.findById(id).orElseThrow {
-            throw IllegalArgumentException("Contact avec l'ID $id non trouvé.")
+            EntityNotFoundException("Contact avec l'ID $id non trouvé.")
         }
     }
 
@@ -29,7 +31,6 @@ class ContactService(private val contactRepository: ContactRepository) {
     @Transactional
     fun updateContact(id: Long, updatedContact: Contact): Contact {
         val existingContact = getContactById(id)
-        println("ici1")
         // Vérification de la contrainte (on ne peut pas changer l'email et le téléphone en même temps)
         if (existingContact.email != updatedContact.email && existingContact.phone != updatedContact.phone) {
             throw IllegalArgumentException("Impossible de modifier l'email et le téléphone en même temps.")
