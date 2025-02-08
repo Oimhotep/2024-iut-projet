@@ -1,5 +1,6 @@
 package iut.nantes.project.products.controller
 
+import iut.nantes.project.products.errors.NotFoundException
 import iut.nantes.project.products.models.FamilyDTO
 import iut.nantes.project.products.service.FamilyService
 import jakarta.validation.Valid
@@ -24,11 +25,22 @@ class FamilyController(private val db : FamilyService) {
         return ResponseEntity.ok(families)
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("{id}")
+    fun getById(@PathVariable id: UUID): ResponseEntity<FamilyDTO> {
+        val family = db.findFamilyById(id)
+        return ResponseEntity.ok(family)
+    }
+    @PutMapping("/{id}")
+    fun updateFamily(@PathVariable id: UUID, @Valid @RequestBody name : String , description : String): ResponseEntity<FamilyDTO> {
+        val updatedFamily = db.updateFamily(id, name , description)
+        return ResponseEntity.ok(updatedFamily)
+    }
+
+    /*@DeleteMapping("/{id}")
     fun deleteFamily(@PathVariable id : UUID) : ResponseEntity<Unit> {
         db.deleteFamily(id)
         return ResponseEntity.noContent().build()
-    }
+    }*/
 
 
 }

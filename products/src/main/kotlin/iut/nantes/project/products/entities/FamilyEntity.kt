@@ -7,10 +7,11 @@ import java.util.*
 @Entity
 @Table(name = "FAMILY")
 data class FamilyEntity(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="family_id")
-    val id : UUID = UUID.randomUUID(),
+    var id : UUID?=null ,
     @Column(unique = true , nullable = false )
-    val name : String = "" ,
-    val description: String = ""
+    var name : String = "",
+    var description: String = "",
 )
+
