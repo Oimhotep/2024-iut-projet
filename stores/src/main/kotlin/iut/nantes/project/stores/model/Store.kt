@@ -3,12 +3,13 @@ package iut.nantes.project.stores.model
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import java.util.*
 
 @Entity
-@Table(name = "stores") // Utilisation du pluriel pour la table
+@Table(name = "stores")
 data class Store(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // L'ID est auto-généré par la base de données
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
     @Column(nullable = false)
@@ -18,7 +19,13 @@ data class Store(
 
     @ManyToOne
     @JoinColumn(name = "contact_id", nullable = false)
-    val contact: Contact // Relation avec le modèle Contact
+    val contact: Contact,
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "store_products", joinColumns = [JoinColumn(name = "store_id")])
+    @Column(name = "product_id", nullable = false)
+    val productIds: List<UUID> = emptyList() // Stocke uniquement les IDs des produits
+
 ) {
-    constructor() : this(null, "", Contact())
+    constructor() : this(null, "", Contact(), emptyList())
 }
